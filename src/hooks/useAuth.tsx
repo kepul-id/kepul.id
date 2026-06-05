@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import type { User } from "@supabase/supabase-js";
 
 const ADMIN_EMAILS = ["satriobudoyo@gmail.com", "isfaaghyth@gmail.com"];
@@ -54,13 +53,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + "/admin",
+      },
     });
-    if (result.error) {
-      return { error: result.error };
-    }
-    return { error: null };
+    return { error };
   };
 
   const signOut = async () => {
