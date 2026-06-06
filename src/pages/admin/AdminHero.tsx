@@ -13,8 +13,8 @@ export default function AdminHero() {
     queryKey: ["admin-hero"],
     queryFn: async () => {
       const { data, error } = await supabase.from("hero_content").select("*").limit(1).single();
-      if (error) throw error;
-      return data;
+      if (error && error.code !== "PGRST116") throw error;
+      return data || null;
     },
   });
 
@@ -25,11 +25,17 @@ export default function AdminHero() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const d = form || hero;
-      const { error } = await supabase.from("hero_content").update({
+      const payload = {
         headline: d.headline, subheadline: d.subheadline, badge_text: d.badge_text,
         image_url: d.image_url, stat_number: d.stat_number, stat_label: d.stat_label,
-      }).eq("id", d.id);
-      if (error) throw error;
+      };
+      if (d.id) {
+        const { error } = await supabase.from("hero_content").update(payload).eq("id", d.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("hero_content").insert(payload);
+        if (error) throw error;
+      }
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-hero"] }); toast.success("Hero updated!"); },
     onError: (e: any) => toast.error(e.message),
