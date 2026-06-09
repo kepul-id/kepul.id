@@ -14,7 +14,9 @@ export default function MaterialPricing() {
   const { data: materials, isLoading } = useQuery({
     queryKey: ["materials"],
     queryFn: async () => {
-      const response = await fetch("https://api.kepul.id/v2/products?limit=100");
+      const isDev = import.meta.env.MODE === "development";
+      const fetchUrl = isDev ? "/v2/products?limit=100" : "https://api.kepul.id/v2/products?limit=100";
+      const response = await fetch(fetchUrl);
       if (!response.ok) throw new Error("Failed to fetch products");
       const result = await response.json();
       return result.data.products;
