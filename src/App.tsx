@@ -23,7 +23,7 @@ import AdminBlog from "./pages/admin/AdminBlog.tsx";
 import AdminHero from "./pages/admin/AdminHero.tsx";
 import AdminSettings from "./pages/admin/AdminSettings.tsx";
 import AdminMedia from "./pages/admin/AdminMedia.tsx";
-import { AdminServices, AdminPartners, AdminImpact, AdminHowItWorks, AdminFaq, AdminAwards, AdminMediaLogos, AdminTestimonials, AdminMaterials, AdminAbout, AdminContactSubmissions } from "./pages/admin/AdminCrud.tsx";
+import { AdminServices, AdminPartners, AdminImpact, AdminHowItWorks, AdminFaq, AdminAwards, AdminMediaLogos, AdminTestimonials, AdminAbout, AdminContactSubmissions } from "./pages/admin/AdminCrud.tsx";
 import AdminSections from "./pages/admin/AdminSections.tsx";
 import AdminNavMenu from "./pages/admin/AdminNavMenu.tsx";
 import AdminSectionContent from "./pages/admin/AdminSectionContent.tsx";
@@ -76,7 +76,7 @@ const App = () => (
             <Route path="/admin/awards" element={<AdminRoute><AdminAwards /></AdminRoute>} />
             <Route path="/admin/media-logos" element={<AdminRoute><AdminMediaLogos /></AdminRoute>} />
             <Route path="/admin/testimonials" element={<AdminRoute><AdminTestimonials /></AdminRoute>} />
-            <Route path="/admin/materials" element={<AdminRoute><AdminMaterials /></AdminRoute>} />
+
             <Route path="/admin/about" element={<AdminRoute><AdminAbout /></AdminRoute>} />
             <Route path="/admin/contact-submissions" element={<AdminRoute><AdminContactSubmissions /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />

@@ -10,6 +10,13 @@ import MediaPicker from "@/components/admin/MediaPicker";
 import { Link } from "react-router-dom";
 
 const sectionFields: Record<string, { key: string; label: string; type: "text" | "textarea" | "image" }[]> = {
+  hero: [
+    { key: "headline", label: "Headline", type: "text" },
+    { key: "subheadline", label: "Subheadline", type: "textarea" },
+    { key: "badge_text", label: "Badge Text", type: "text" },
+    { key: "stat_number", label: "Stat Number", type: "text" },
+    { key: "stat_label", label: "Stat Label", type: "text" },
+  ],
   corporate: [
     { key: "badge", label: "Badge Text", type: "text" },
     { key: "headline", label: "Headline", type: "text" },
@@ -80,6 +87,7 @@ const sectionFields: Record<string, { key: string; label: string; type: "text" |
 };
 
 const sectionLabels: Record<string, string> = {
+  hero: "Hero",
   corporate: "#BerawalDariKantor",
   app_download: "App Download",
   final_cta: "Final CTA",
@@ -109,8 +117,8 @@ export default function AdminSectionContent() {
         .eq("page", "home")
         .limit(1)
         .single();
-      if (error) throw error;
-      return data;
+      if (error && error.code !== "PGRST116") throw error;
+      return data || null;
     },
     enabled: !!sectionKey,
   });
@@ -123,11 +131,18 @@ export default function AdminSectionContent() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
-        .from("page_sections")
-        .update({ content: form })
-        .eq("id", section!.id);
-      if (error) throw error;
+      if (section?.id) {
+        const { error } = await supabase
+          .from("page_sections")
+          .update({ content: form })
+          .eq("id", section.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("page_sections")
+          .insert({ section_key: sectionKey!, page: "home", label: sectionLabels[sectionKey!] || sectionKey!, content: form });
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-section-content", sectionKey] });

@@ -3,9 +3,8 @@ import Footer from "@/components/layout/Footer";
 import FloatingCTA from "@/components/layout/FloatingCTA";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useState } from "react";
-import { Search, CheckCircle, XCircle } from "lucide-react";
+import { Search, TrendingUp, TrendingDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 export default function MaterialPricing() {
   const [search, setSearch] = useState("");
@@ -15,9 +14,10 @@ export default function MaterialPricing() {
   const { data: materials, isLoading } = useQuery({
     queryKey: ["materials"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("materials").select("*").eq("is_active", true).order("sort_order");
-      if (error) throw error;
-      return data;
+      const response = await fetch("https://api.kepul.id/v2/products?limit=100");
+      if (!response.ok) throw new Error("Failed to fetch products");
+      const result = await response.json();
+      return result.data.products;
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -58,16 +58,23 @@ export default function MaterialPricing() {
             {isLoading && <p className="text-center text-muted-foreground">Loading...</p>}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filtered.map((m, i) => (
-                <div key={m.id} className={`glass-card p-5 flex items-center gap-4 transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`} style={{ transitionDelay: `${i * 50}ms` }}>
+                <div key={m.id || m.uuid} className={`glass-card p-5 flex items-center gap-4 transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`} style={{ transitionDelay: `${i * 50}ms` }}>
                   {m.image_url && (
                     <img src={m.image_url} alt={m.name} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
                   )}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-foreground">{m.name}</h3>
                     <p className="text-xs text-muted-foreground">{m.category}</p>
-                    <p className="text-sm font-medium text-primary mt-1">{m.price}</p>
+                    <p className="text-sm font-bold text-foreground flex items-center gap-1 mt-1">
+                      {m.price_after > m.price_before ? (
+                        <TrendingUp className="w-4 h-4 text-emerald-500" />
+                      ) : m.price_after < m.price_before ? (
+                        <TrendingDown className="w-4 h-4 text-red-500" />
+                      ) : null}
+                      <span className="text-primary">Rp {m.price_after?.toLocaleString('id-ID')}</span>
+                      <span className="text-xs text-muted-foreground font-normal">/{m.unit_type}</span>
+                    </p>
                   </div>
-                  {m.accepted ? <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" /> : <XCircle className="w-5 h-5 text-destructive flex-shrink-0" />}
                 </div>
               ))}
             </div>

@@ -33,7 +33,6 @@ const sidebarGroups = [
     items: [
       { label: "Blog Posts", path: "/admin/blog", icon: FileText },
       { label: "About Page", path: "/admin/about", icon: Info },
-      { label: "Materials", path: "/admin/materials", icon: Package },
     ],
   },
   {

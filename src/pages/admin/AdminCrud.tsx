@@ -255,21 +255,7 @@ export function AdminTestimonials() {
   );
 }
 
-export function AdminMaterials() {
-  return (
-    <AdminLayout>
-      <CrudSection title="Material & Harga" queryKey="admin-materials" table="materials" defaultItem={{ name: "", category: "Plastik", price: "-", accepted: true, image_url: "", sort_order: 0, is_active: true }}
-        fields={[
-          { key: "name", label: "Nama Material" },
-          { key: "category", label: "Kategori" },
-          { key: "price", label: "Harga" },
-          { key: "accepted", label: "Diterima?", type: "boolean" },
-          { key: "image_url", label: "Gambar", type: "image" },
-        ]}
-      />
-    </AdminLayout>
-  );
-}
+
 
 export function AdminAbout() {
   return (

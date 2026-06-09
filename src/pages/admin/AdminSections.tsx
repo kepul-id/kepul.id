@@ -94,7 +94,7 @@ export default function AdminSections() {
                 </div>
 
                 <div className="flex items-center gap-1">
-                  {["corporate", "app_download", "final_cta", "how_it_works", "services", "impact", "awards", "media", "testimonials", "blog", "faq", "partners"].includes(section.section_key) && (
+                  {["hero", "corporate", "app_download", "final_cta", "how_it_works", "services", "impact", "awards", "media", "testimonials", "blog", "faq", "partners"].includes(section.section_key) && (
                     <Link to={`/admin/sections/${section.section_key}`} className="p-2 hover:bg-accent rounded-lg text-primary">
                       <Pencil className="w-4 h-4" />
                     </Link>
